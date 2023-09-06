@@ -90,11 +90,10 @@
              based on environment variables-->
             <id>production</id>
             <activation>
-                <property>
-                    <!-- If happening in buildpacks.io build, make a production build -->
-                    <name>env.CNB_TARGET_OS</name>
-                    <value>linux</value>
-                </property>
+                <os>
+                    <!-- linux: must be CI-CD pipeline :-) -->
+                    <family>linux</family>
+                </os>
             </activation>
             <build>
                 <plugins>
