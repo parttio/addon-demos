@@ -2,12 +2,14 @@ package org.example;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.dom.Style;
 import org.vaadin.firitin.appframework.MainLayout;
 
 public class DefaultLayout extends MainLayout {
 
     Anchor viewSource = new Anchor("", "View source...");
+    Anchor viewAddon = new Anchor("", "Directory page");
 
     @Override
     protected String getDrawerHeader() {
@@ -22,11 +24,14 @@ public class DefaultLayout extends MainLayout {
         super.setContent(content);
         String name = content.getClass().getName();
         viewSource.setHref(baseSourceUrl.formatted(name.replace(".", "/")));
+        String addonId = content.getClass().getAnnotation(Addon.class).value();
+        viewAddon.setHref("https://vaadin.com/directory/component/%s".formatted(addonId));
         if(!viewSource.isAttached()) {
-            viewSource.getStyle().setPosition(Style.Position.ABSOLUTE);
-            viewSource.getStyle().setRight("1em");
-            viewSource.getStyle().setTop("1em");
-            addToNavbar(true, viewSource);
+            HorizontalLayout links = new HorizontalLayout(viewSource, viewAddon);
+            links.getStyle().setPosition(Style.Position.ABSOLUTE);
+            links.getStyle().setRight("1em");
+            links.getStyle().setTop("1em");
+            addToNavbar(true, links);
         }
     }
 }

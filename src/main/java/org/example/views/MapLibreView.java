@@ -2,9 +2,11 @@ package org.example.views;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import org.example.Addon;
 import org.example.DefaultLayout;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Polygon;
@@ -12,6 +14,7 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.vaadin.addons.maplibre.MapLibre;
 import org.vaadin.addons.maplibre.Marker;
+import org.vaadin.firitin.appframework.MenuItem;
 import org.vaadin.firitin.components.RichText;
 import org.vaadin.firitin.components.orderedlayout.VHorizontalLayout;
 import org.vaadin.firitin.geolocation.Geolocation;
@@ -20,6 +23,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 @Route(layout = DefaultLayout.class)
+@MenuItem(title = "MapLibreGL JS", icon = VaadinIcon.MAP_MARKER)
+@Addon("maplibregl--add-on")
 public class MapLibreView extends VerticalLayout {
 
     private Marker yourPosition;

@@ -4,10 +4,12 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import org.example.Addon;
 import org.example.DefaultLayout;
 import org.vaadin.firitin.components.RichText;
 
 @Route(value = "", layout = DefaultLayout.class)
+@Addon("flow-viritin")
 public class AboutView extends VerticalLayout {
 
     public AboutView() {
