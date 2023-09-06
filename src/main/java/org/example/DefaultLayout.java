@@ -8,8 +8,8 @@ import org.vaadin.firitin.appframework.MainLayout;
 
 public class DefaultLayout extends MainLayout {
 
-    Anchor viewSource = new Anchor("", "View source...");
-    Anchor viewAddon = new Anchor("", "Directory page");
+    Anchor viewSource = new Anchor("", "View source");
+    Anchor viewAddon = new Anchor("", "Install");
 
     @Override
     protected String getDrawerHeader() {
