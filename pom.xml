@@ -85,8 +85,17 @@
 
     <profiles>
         <profile>
-            <!-- Production mode is activated using -Pproduction -->
+            <!-- Production mode is activated using -Pproduction
+             or automatically for e.g. "cloud native buildpack" builds
+             based on environment variables-->
             <id>production</id>
+            <activation>
+                <property>
+                    <!-- If happening in buildpacks.io build, make a production build -->
+                    <name>env.CNB_TARGET_OS</name>
+                    <value>linux</value>
+                </property>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
