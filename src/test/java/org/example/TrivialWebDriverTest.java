@@ -34,7 +34,7 @@ public class TrivialWebDriverTest {
         Browser browser = playwright.firefox().launch();
         Page page = browser.newPage();
         page.navigate("http://localhost:" + port + "/");
-        assertThat(page.getByText("Welcome }> add-on demo project")).isVisible();
+        assertThat(page.getByText("}> add-on demo project")).isVisible();
     }
 
     @Test
@@ -43,7 +43,7 @@ public class TrivialWebDriverTest {
         Page page = browser.newPage();
         page.navigate("http://localhost:" + port + "/");
 
-        assertThat(page.getByText("Welcome }> add-on demo project")).isVisible();
+        assertThat(page.getByText("}> add-on demo project")).isVisible();
 
         MutableInt count = new MutableInt(0);
 
