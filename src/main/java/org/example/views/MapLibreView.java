@@ -71,7 +71,7 @@ public class MapLibreView extends VerticalLayout {
             });
             Button seeWorld = new Button("See the world (flyTo(0,0,0)");
             seeWorld.addClickListener(e -> {
-                map.flyTo(0,0,0);
+                map.flyTo(0,0,0.0);
             });
             Button plotYourself = new Button("Plot yourself");
             plotYourself.addClickListener(e -> {
