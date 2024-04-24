@@ -1,4 +1,4 @@
-package org.example.views;
+package org.example.views.maplibre;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;

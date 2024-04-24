@@ -1,8 +1,9 @@
-package org.example.views;
+package org.example.views.maplibre;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -73,7 +74,7 @@ public class MapLibreView extends VerticalLayout {
             seeWorld.addClickListener(e -> {
                 map.flyTo(0,0,0.0);
             });
-            Button plotYourself = new Button("Plot yourself");
+            Button plotYourself = new Button("Geolocate once");
             plotYourself.addClickListener(e -> {
                 Geolocation.getCurrentPosition(position -> {
                     yourPosition = map.addMarker(position.getCoords().getLongitude(), position.getCoords().getLatitude());
@@ -82,7 +83,17 @@ public class MapLibreView extends VerticalLayout {
                     System.out.println("Error: ");
                 });
             });
-            add(new HorizontalLayout(b, seeWorld, plotYourself));
+            Button track = new Button("Track, follow & rotate (try on iphone & walk)");
+            track.addClickListener(e -> {
+                new MyPositionMarker(map);
+                track.setEnabled(false);
+            });
+            FlexLayout flexLayout = new FlexLayout();
+            flexLayout.setFlexDirection(FlexLayout.FlexDirection.ROW);
+            flexLayout.setFlexWrap(FlexLayout.FlexWrap.WRAP);
+            flexLayout.getStyle().set("column-gap", "1em");
+            flexLayout.add(b, seeWorld, plotYourself, track);
+            add(flexLayout);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         } catch (ParseException e) {
