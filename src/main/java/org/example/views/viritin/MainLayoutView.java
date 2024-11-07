@@ -28,10 +28,10 @@ public class MainLayoutView extends VerticalLayout {
 
     public MainLayoutView() {
         add(new RichText().withMarkDown("""
-            # AppLayout with automatic menu for small to medium size applications
+            # AppLayout with an automatic menu suitable for small to medium size applications
             
-            Viritin provides a simple way to create a main layout and top level navigation for your application.
-            Nowadays based on the AppLayout and SideNav components from the Vaadin core.
+            Viritin provides a simple way to create a main layout and a top level navigation for your application.
+            Nowadays the implementation is based on the AppLayout and SideNav components from the Vaadin core.
             
             This example uses this MainLayout component of which the DefaultLayout is a subclass.
             The menu is built automatically for views that define the DefaultLayout as their layout.
