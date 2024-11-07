@@ -1,4 +1,4 @@
-package org.example.views;
+package org.example.views.viritin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,7 +29,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 
 @Route(layout = DefaultLayout.class)
-@MenuItem(icon = VaadinIcon.PRINT)
+@MenuItem(icon = VaadinIcon.PRINT, parent = ViritinMenuGroup.class)
 @Addon("flow-viritin")
 public class PrettyPrintingView extends VVerticalLayout {
 

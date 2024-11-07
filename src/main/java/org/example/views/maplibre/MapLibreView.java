@@ -24,7 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 @Route(layout = DefaultLayout.class)
-@MenuItem(title = "MapLibreGL JS", icon = VaadinIcon.MAP_MARKER)
+@MenuItem(title = "MapLibreGL JS", order = MenuItem.BEGINNING, icon = VaadinIcon.GLOBE, parent = MapLibreMenuGroup.class)
 @Addon("maplibregl--add-on")
 public class MapLibreView extends VerticalLayout {
 

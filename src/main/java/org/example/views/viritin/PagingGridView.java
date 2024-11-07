@@ -1,4 +1,4 @@
-package org.example.views;
+package org.example.views.viritin;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.GridSortOrder;
@@ -16,7 +16,7 @@ import org.vaadin.firitin.components.RichText;
 import org.vaadin.firitin.components.grid.PagingGrid;
 
 @Route(layout = DefaultLayout.class)
-@MenuItem(icon = VaadinIcon.EDIT)
+@MenuItem(icon = VaadinIcon.GRID, parent = ViritinMenuGroup.class)
 @Addon("flow-viritin")
 public class PagingGridView extends VerticalLayout {
 

@@ -22,7 +22,7 @@ import org.vaadin.firitin.components.orderedlayout.VHorizontalLayout;
 import java.time.LocalDate;
 
 @Route(layout = DefaultLayout.class)
-@MenuItem(title = "MapLibre JTS editors", icon = VaadinIcon.MAP_MARKER)
+@MenuItem(title = "MapLibre JTS editors", icon = VaadinIcon.MAP_MARKER, parent = MapLibreMenuGroup.class)
 @Addon("maplibregl--add-on")
 public class MapLibreJTSEditorsView extends VerticalLayout {
 

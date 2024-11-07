@@ -1,4 +1,4 @@
-package org.example.views;
+package org.example.views.viritin;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 @Route(layout = DefaultLayout.class)
-@MenuItem(icon = VaadinIcon.EDIT)
+@MenuItem(icon = VaadinIcon.EDIT, parent = ViritinMenuGroup.class)
 @Addon("flow-viritin")
 public class FormFieldsView extends BeanValidationForm<FormFieldsView.MyRecord> {
 
