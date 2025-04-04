@@ -10,6 +10,7 @@ import org.vaadin.addons.maplibre.LineLayer;
 import org.vaadin.addons.maplibre.LinePaint;
 import org.vaadin.addons.maplibre.MapLibre;
 import org.vaadin.addons.maplibre.Marker;
+import org.vaadin.addons.maplibre.dto.RawColor;
 import org.vaadin.firitin.geolocation.Geolocation;
 import org.vaadin.firitin.geolocation.GeolocationCoordinates;
 import org.vaadin.firitin.geolocation.GeolocationErrorEvent;
@@ -68,7 +69,7 @@ public class MyPositionMarker implements Geolocation.UpdateListener, Geolocation
         if (tailpoints.size() == 2) {
             var ls = gf.createLineString(tailpoints.toArray(new Coordinate[0]));
             // create and start showing the tail
-            tail = map.addLineLayer(ls, new LinePaint("#00ff00", 2.0));
+            tail = map.addLineLayer(ls, new LinePaint(new RawColor("#00ff00"), 2.0));
         } else if (tailpoints.size() > 2) {
             // update tail
             tail.addCoordinates(tailpoints.size() == 100 ? 1 : 0, tailpoints.get(tailpoints.size() - 1));

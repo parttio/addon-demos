@@ -16,7 +16,6 @@ import org.example.DefaultLayout;
 import org.example.data.domain.Address;
 import org.example.data.domain.ComplexPerson;
 import org.example.data.domain.Person;
-import org.jetbrains.annotations.NotNull;
 import org.vaadin.firitin.appframework.MenuItem;
 import org.vaadin.firitin.components.RichText;
 import org.vaadin.firitin.components.orderedlayout.VVerticalLayout;
@@ -85,7 +84,7 @@ public class PrettyPrintingView extends VVerticalLayout {
 
     }
 
-    private static @NotNull Person getPerson() {
+    private static Person getPerson() {
         ComplexPerson person = new ComplexPerson();
         person.setId(678);
         person.setFirstName("John");
