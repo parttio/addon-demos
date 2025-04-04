@@ -5,7 +5,9 @@ import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.SortDirection;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import org.example.Addon;
 import org.example.DefaultLayout;
@@ -14,13 +16,18 @@ import org.example.data.domain.Person;
 import org.vaadin.firitin.appframework.MenuItem;
 import org.vaadin.firitin.components.RichText;
 import org.vaadin.firitin.components.grid.PagingGrid;
+import org.vaadin.firitin.layouts.HorizontalFloatLayout;
 
 @Route(layout = DefaultLayout.class)
 @MenuItem(icon = VaadinIcon.GRID, parent = ViritinMenuGroup.class)
 @Addon("flow-viritin")
 public class PagingGridView extends VerticalLayout {
 
+    private final PagingGrid<Person> table = new PagingGrid<>(Person.class);
+    private final DataService dao;
+
     public PagingGridView(DataService service) {
+        this.dao = service;
 
         add(new RichText().withMarkDown("""
         # PagingGrid from Viritin add-on
@@ -31,24 +38,24 @@ public class PagingGridView extends VerticalLayout {
         
         """));
 
-        final PagingGrid<Person> table = new PagingGrid<>(Person.class);
+        add(new TextField() {{
+            setValueChangeMode(ValueChangeMode.LAZY);
+            setClearButtonVisible(true);
+            setPlaceholder("Filter by first name");
+
+            addValueChangeListener(e -> {
+                String filter = e.getValue();
+                // Define results with a simpler data provider API, that just gives you page to
+                // request
+                list(filter);
+            });
+
+        }});
+
         table.setColumns("id", "firstName", "lastName", "age");
 
-        // Define results with a simpler data provider API, that just gives you page to
-        // request
-        table.setPagingDataProvider((page, pageSize) -> {
-            // This is demo specific line, normally, e.g. with spring data, page number is
-            // enough
-            int start = (int) (page * table.getPageSize());
-            // Optional, sorting
-            if (!table.getSortOrder().isEmpty()) {
-                GridSortOrder<Person> sortOrder = table.getSortOrder().get(0);
-                String propertyId = sortOrder.getSorted().getKey();
-                boolean asc = sortOrder.getDirection() == SortDirection.ASCENDING;
-                return service.findPersons(start, pageSize, propertyId, asc);
-            }
-            return service.findPersons(start, pageSize);
-        });
+
+        list(""); // Initial load with no filter
 
         // Optional
         // If you know, or some further long running task can detect the size of
@@ -64,14 +71,35 @@ public class PagingGridView extends VerticalLayout {
         });
 
         Select<PagingGrid.PaginationBarMode> select = new Select<>();
+        select.setLabel("Pagination bar mode");
         select.setItems(PagingGrid.PaginationBarMode.values());
         select.setValue(PagingGrid.PaginationBarMode.TOP);
         select.addValueChangeListener(e -> {
             table.setPaginationBarMode(e.getValue());
         });
 
-        add(table, b, b2, select);
+        add(table, new HorizontalFloatLayout(b, b2, select));
 
+    }
+
+    private void list(String filter) {
+        table.setPagingDataProvider((page, pageSize) -> {
+            // This is demo specific line, normally, e.g. with spring data, page number is
+            // enough
+            int start = (int) (page * table.getPageSize());
+            String sortProperty;
+            boolean asc = true;
+            // Optional, sorting
+            if (!table.getSortOrder().isEmpty()) {
+                GridSortOrder<Person> sortOrder = table.getSortOrder().get(0);
+                sortProperty = sortOrder.getSorted().getKey();
+                asc = sortOrder.getDirection() == SortDirection.ASCENDING;
+            } else {
+                // sort by id for stability if nothing else defined
+                sortProperty = "id";
+            }
+            return dao.findPersons(filter, start, pageSize, "id", true);
+        });
     }
 
 }
