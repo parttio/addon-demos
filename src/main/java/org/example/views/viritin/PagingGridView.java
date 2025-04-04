@@ -66,7 +66,7 @@ public class PagingGridView extends VerticalLayout {
                 table.setPaginationBarMode(e.getValue());
             });
 
-            add(new FirstNameFilter(), table, new HorizontalFloatLayout(b, b2, select));
+            add(b, b2, select);
         }});
 
 
