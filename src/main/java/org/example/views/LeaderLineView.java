@@ -1,6 +1,8 @@
 package org.example.views;
 
+import com.fasterxml.jackson.databind.JavaType;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.dom.Style;
@@ -15,11 +17,15 @@ import org.parttio.LeaderLineFactory;
 import org.parttio.LeaderLineOptions;
 import org.parttio.PathType;
 import org.parttio.PlugType;
+import org.parttio.SocketGravity;
 import org.parttio.SocketType;
 import org.vaadin.firitin.appframework.MenuItem;
 import org.vaadin.firitin.components.RichText;
+import org.vaadin.firitin.components.textfield.VTextField;
 import org.vaadin.firitin.rad.AutoForm;
 import org.vaadin.firitin.rad.AutoFormContext;
+
+import java.util.Arrays;
 
 @Route(layout = DefaultLayout.class)
 @MenuItem(title = "LeaderLine", icon = VaadinIcon.LINE_H)
@@ -80,12 +86,19 @@ public class LeaderLineView extends VerticalLayout {
             if (leaderLineOptions == null) {
                 leaderLineOptions = new LeaderLineOptions();
             }
+            // Use AutoForm to edit the options in the UI, then redraw the line
             AutoFormContext formContext = new AutoFormContext();
+            formContext.withPropertyEditor(ctx -> {
+                JavaType primaryType = ctx.beanPropertyDefinition().getPrimaryType();
+                if (primaryType.getRawClass() == SocketGravity.class) {
+                    return new SocketGravityField();
+                }
+                return null;
+            });
             AutoForm<LeaderLineOptions> autoForm = formContext.createForm(leaderLineOptions);
             autoForm.setSaveHandler(options -> {
                 redrawLine();
             });
-            // TODO enhance autoform to support configs
             autoForm.openInDialog();
         }));
 
@@ -109,6 +122,51 @@ public class LeaderLineView extends VerticalLayout {
         public void randomizePosition() {
             getStyle().setTop((100 + Math.random() * 400) + "px");
             getStyle().setLeft((200 + Math.random() * 400) + "px");
+        }
+    }
+
+    /*
+     * Custom field for SocketGravity, which can be int or int,int ...
+     */
+    public class SocketGravityField extends CustomField<SocketGravity> {
+
+        private VTextField textField = new VTextField()
+                .withPlaceholder("""
+                        "int, int" or "int"
+                        """)
+                ;
+
+        public SocketGravityField() {
+            add(textField);
+            textField.addValueChangeListener(event -> {
+                // Propagate the event to custom field level...
+                if (event.isFromClient()) {
+                    setModelValue(generateModelValue(), true);
+                }
+            });
+        }
+
+        @Override
+        protected SocketGravity generateModelValue() {
+            String value = textField.getValue();
+            if (value == null || value.isEmpty()) {
+                return null;
+            }
+            String[] values = value.split(",");
+            if (values.length == 1) {
+                return new SocketGravity(Integer.parseInt(values[0]));
+            } else {
+                return new SocketGravity(Integer.parseInt(values[0]), Integer.parseInt(values[1]));
+            }
+        }
+
+        @Override
+        protected void setPresentationValue(SocketGravity newPresentationValue) {
+            String str = Arrays.toString(newPresentationValue.values())
+                    .replaceAll("\\[", "")
+                    .replaceAll("]", "");
+
+            textField.setValue(str);
         }
     }
 }
