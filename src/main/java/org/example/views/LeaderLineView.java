@@ -3,10 +3,17 @@ package org.example.views;
 import com.fasterxml.jackson.databind.JavaType;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.customfield.CustomField;
+import com.vaadin.flow.component.dependency.JsModule;
+import com.vaadin.flow.component.dependency.NpmPackage;
+import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.Route;
+import in.virit.color.Color;
+import in.virit.color.HexColor;
+import in.virit.color.NamedColor;
+import in.virit.color.RgbColor;
 import org.example.Addon;
 import org.example.DefaultLayout;
 import org.parttio.Dash;
@@ -19,6 +26,7 @@ import org.parttio.PathType;
 import org.parttio.PlugType;
 import org.parttio.SocketGravity;
 import org.parttio.SocketType;
+import org.vaadin.addons.parttio.colorful.RgbaColorPicker;
 import org.vaadin.firitin.appframework.MenuItem;
 import org.vaadin.firitin.components.RichText;
 import org.vaadin.firitin.components.textfield.VTextField;
@@ -30,6 +38,9 @@ import java.util.Arrays;
 @Route(layout = DefaultLayout.class)
 @MenuItem(title = "LeaderLine", icon = VaadinIcon.LINE_H)
 @Addon("LeaderLine")
+// TODO for some reason it seams like this is needed,for dev-mode, figure out why.
+// Production bundle builds fine even without this (and line appears).
+@Uses(LeaderLineFactory.class)
 public class LeaderLineView extends VerticalLayout {
 
     private final AbsoluteButton button2;
@@ -57,22 +68,22 @@ public class LeaderLineView extends VerticalLayout {
 
         add(new Button("Weird styling", e -> {
             leaderLineOptions = new LeaderLineOptions() {{
-                setColor("#ff00ff");
+                setColor(new RgbColor(255, 0, 255));
                 setStartPlug(PlugType.SQUARE);
                 setEndPlug(PlugType.ARROW2);
                 setDash(new Dash(true, 100.0));
                 setEndPlugSize(3.0);
-                setEndPlugColor("green");
+                setEndPlugColor(NamedColor.GREEN);
                 setStartSocket(SocketType.BOTTOM);
                 setDropShadow(new DropShadow("blue", 2.0, 2.0, 2.5));
                 setStartLabel("Start label");
                 setMiddleLabel("Middle label");
                 setEndLabel("End label");
-                setGradient(new Gradient("#ff0000", "#00ff00", 0.0));
+                setGradient(new Gradient(HexColor.of("#ff0000"), HexColor.of("#00ff00"), 0.0));
                 setSize(10.0);
                 setOutline(true);
                 setOutlineSize(5.0);
-                setOutlineColor("red");
+                setOutlineColor(NamedColor.RED);
                 setPath(PathType.ARC);
             }};
             redrawLine();
@@ -88,13 +99,9 @@ public class LeaderLineView extends VerticalLayout {
             }
             // Use AutoForm to edit the options in the UI, then redraw the line
             AutoFormContext formContext = new AutoFormContext();
-            formContext.withPropertyEditor(ctx -> {
-                JavaType primaryType = ctx.beanPropertyDefinition().getPrimaryType();
-                if (primaryType.getRawClass() == SocketGravity.class) {
-                    return new SocketGravityField();
-                }
-                return null;
-            });
+            formContext.withPropertyEditor(Color.class, RgbaColorPicker.class);
+            formContext.withPropertyEditor(SocketGravity.class, SocketGravityField.class);
+
             AutoForm<LeaderLineOptions> autoForm = formContext.createForm(leaderLineOptions);
             autoForm.setSaveHandler(options -> {
                 redrawLine();
@@ -128,7 +135,7 @@ public class LeaderLineView extends VerticalLayout {
     /*
      * Custom field for SocketGravity, which can be int or int,int ...
      */
-    public class SocketGravityField extends CustomField<SocketGravity> {
+    public static class SocketGravityField extends CustomField<SocketGravity> {
 
         private VTextField textField = new VTextField()
                 .withPlaceholder("""

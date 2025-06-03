@@ -1,16 +1,13 @@
 package org.example.views.maplibre;
 
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.spring.annotation.RouteScope;
-import com.vaadin.flow.spring.annotation.RouteScopeOwner;
+import in.virit.color.HexColor;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
-import org.springframework.stereotype.Component;
 import org.vaadin.addons.maplibre.LineLayer;
 import org.vaadin.addons.maplibre.LinePaint;
 import org.vaadin.addons.maplibre.MapLibre;
 import org.vaadin.addons.maplibre.Marker;
-import org.vaadin.addons.maplibre.dto.RawColor;
 import org.vaadin.firitin.geolocation.Geolocation;
 import org.vaadin.firitin.geolocation.GeolocationCoordinates;
 import org.vaadin.firitin.geolocation.GeolocationErrorEvent;
@@ -44,7 +41,7 @@ public class MyPositionMarker implements Geolocation.UpdateListener, Geolocation
 
         if (marker == null) {
             marker = map.addMarker(coords.getLongitude(), coords.getLatitude());
-            marker.setColor("#009900");
+            marker.setColor(HexColor.of("#009900"));
             map.flyTo(marker.getGeometry());
         } else {
             // update position
@@ -69,7 +66,7 @@ public class MyPositionMarker implements Geolocation.UpdateListener, Geolocation
         if (tailpoints.size() == 2) {
             var ls = gf.createLineString(tailpoints.toArray(new Coordinate[0]));
             // create and start showing the tail
-            tail = map.addLineLayer(ls, new LinePaint(new RawColor("#00ff00"), 2.0));
+            tail = map.addLineLayer(ls, new LinePaint(HexColor.of("#00ff00"), 2.0));
         } else if (tailpoints.size() > 2) {
             // update tail
             tail.addCoordinates(tailpoints.size() == 100 ? 1 : 0, tailpoints.get(tailpoints.size() - 1));
