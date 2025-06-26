@@ -15,7 +15,7 @@
     <parent>
         <groupId>in.virit.sb</groupId>
         <artifactId>viritin-project-parent</artifactId>
-        <version>0.0.13</version>
+        <version>0.0.14</version>
         <relativePath/>
     </parent>
 
@@ -86,7 +86,19 @@
         <dependency>
             <groupId>in.virit</groupId>
             <artifactId>viritin</artifactId>
-            <version>2.15.1</version>
+            <version>2.16.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>software.xdev</groupId>
+            <artifactId>vaadin-date-range-picker</artifactId>
+            <version>4.2.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vaadin.componentfactory</groupId>
+            <artifactId>togglebutton</artifactId>
+            <version>3.0.0</version>
         </dependency>
 
     </dependencies>
