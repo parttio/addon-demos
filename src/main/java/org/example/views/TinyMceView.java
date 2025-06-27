@@ -25,7 +25,8 @@ public class TinyMceView extends VerticalLayout {
         add(new RichText().withMarkDown("""
         # TinyMCE editor
         
-        TinyMCE is a platform independent web based Javascript HTML WYSIWYG editor control released as Open Source under LGPL.
+        TinyMCE is a platform independent web based Javascript HTML WYSIWYG editor control released as Open Source under GPL (since version 7).
+        The Vaadin add-on used here, uses the [TinyMCE 6](https://www.tiny.cloud/docs/tinymce/6/) version, which use more enterprise friendly MIT license. Join the discussion in [GitHub](https://github.com/parttio/tinymce-for-flow/issues/37) whether to upgrade to TinyMCE 7 or to continue with the forked HugeRTE project in the future.
         
         See more configuration options from [add-on tests](https://github.com/parttio/tinymce-for-flow/tree/master/src/test/java/org/vaadin/tinymce) or [TinyMCE documentation](https://www.tiny.cloud/docs/configure/).
         """));
