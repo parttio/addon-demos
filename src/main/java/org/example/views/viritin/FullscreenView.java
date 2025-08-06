@@ -1,7 +1,6 @@
 package org.example.views.viritin;
 
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.markdown.Markdown;
@@ -12,6 +11,7 @@ import org.example.DefaultLayout;
 import org.vaadin.firitin.appframework.MenuItem;
 import org.vaadin.firitin.components.html.VImage;
 import org.vaadin.firitin.components.orderedlayout.VVerticalLayout;
+import org.vaadin.firitin.layouts.HorizontalFloatLayout;
 import org.vaadin.firitin.util.fullscreen.FullScreen;
 
 @Route(layout = DefaultLayout.class)
@@ -24,21 +24,21 @@ public class FullscreenView extends VVerticalLayout {
                 
                 Browsers support [Fullscreen API](https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API) to allow web 
                 applications to present content in full screen mode. Viritin provides a simple way to use this API from Java
-                and tackles couple of Vaadin related problems with it.
+                and tackles a couple of problems Vaadin apps currently have with fullscreen mode.
                 """));
 
-        add(new Button("Fullscreen the app", event -> {
-            FullScreen.requestFullscreen();
-        }));
-        add(new Button("Exit fullscreen (or use escape)", event -> {
-            FullScreen.exitFullscreen();
-        }));
-
-        add(new Paragraph("""
-                Alternatively you can utilize Fullscreen.requestFullscreen(Component) API that allows you to
-                make a specific component of your current view fullscreen (and temporarily hide others). 
-                Click the image below to enter fullscreen mode with the photo only.
-                """));
+        add(new HorizontalFloatLayout(
+                new Button("Fullscreen the app", event -> {
+                    FullScreen.requestFullscreen();
+                }),
+                new Button("Fullscreen the view", event -> {
+                    FullScreen.requestFullscreen(FullscreenView.this);
+                }),
+                new Button("Exit fullscreen (or use escape)", event -> {
+                    FullScreen.exitFullscreen();
+                })
+        ));
+        add(new Paragraph("Click the image below to enter fullscreen mode with the photo only."));
         var photo = new VImage("/view.jpeg", "view").withFullWidth();
         photo.addClickListener(event -> {
             FullScreen.isFullscreen().thenAccept(isFullscreen -> {
