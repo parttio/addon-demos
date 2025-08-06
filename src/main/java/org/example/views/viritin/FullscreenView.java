@@ -22,7 +22,8 @@ public class FullscreenView extends VVerticalLayout {
         add(new Markdown("""
                 # Fullscreen API
                 
-                Browsers support [Fullscreen API](https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API) to allow web 
+                Browsers (pretty much all but not iPhone, but on mobile you should go PWA anyways 🤷‍♂️) 
+                support [Fullscreen API](https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API) to allow web 
                 applications to present content in full screen mode. Viritin provides a simple way to use this API from Java
                 and tackles a couple of problems Vaadin apps currently have with fullscreen mode.
                 """));
