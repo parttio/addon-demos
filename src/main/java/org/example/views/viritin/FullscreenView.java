@@ -28,6 +28,14 @@ public class FullscreenView extends VVerticalLayout {
                 and tackles a couple of problems Vaadin apps currently have with fullscreen mode.
                 """));
 
+        FullScreen.fullScreenAvailable().thenAccept(available -> {
+            if (!available) {
+                Notification.show("Fullscreen API is not available in this browser. " +
+                        "You are most likely using iPhone. In a real app you should probably hide widgets providing fullscreen functionality.")
+                        .setDuration(0);
+            }
+        });
+
         add(new HorizontalFloatLayout(
                 new Button("Fullscreen the app", event -> {
                     FullScreen.requestFullscreen();
@@ -51,6 +59,7 @@ public class FullscreenView extends VVerticalLayout {
                 }
             });
         });
+
 
         add(photo);
 
