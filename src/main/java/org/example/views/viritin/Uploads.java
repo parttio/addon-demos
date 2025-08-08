@@ -42,7 +42,6 @@ public class Uploads extends VVerticalLayout {
          * Does not require odd configurations in Spring Boot for multipart upload size limits. Note that 
            your reverse proxy (e.g. nginx) might still limit the upload size, in this deployment 50m.
          * Uploads are truly streamed, you can handle files while they are being uploaded
-         * Provides file metadata like file name, mime type when handling dropped files (in Flow 24.8.5 only when picked via dialog, regression)
          * Supports folder uplooads both via dialog and drag-and-drop
         
         Below a configuration that counts lines from folders that are picked with the dialog (or
