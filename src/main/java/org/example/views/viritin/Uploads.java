@@ -77,6 +77,7 @@ public class Uploads extends VVerticalLayout {
                 return () -> Notification.show("Error processing file: " + e.getMessage());
             }
         })
+                .withChunkSize(300* 1024) // 300kb chunks, default is 1MB
                 .chooseFolders() // make the OS dialog select folders
                 .withUploadButton(new VButton(VaadinIcon.FOLDER, "Choose folder..."));
         add(fileHandlerExample);
