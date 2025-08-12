@@ -39,9 +39,16 @@ public class Uploads extends VVerticalLayout {
         The upload API in Vaadin core got a lot better in 24.8, but there are
         still couple of superpowers in Viritin (hopefully coming to core in the future):
         
-         * Does not require odd configurations in Spring Boot for multipart upload size limits. Note that 
-           your reverse proxy (e.g. nginx) might still limit the upload size, in this deployment 50m.
-         * Uploads are truly streamed, you can handle files while they are being uploaded
+         * Does not require odd configurations in Spring Boot for multipart upload size limits.
+         * Supports uploading huge files, even if your reverse proxy limits the upload size. In case of a 
+           413 error (too large request), the upload will automatically switch to chunked mode, sending 
+           the file in smaller chunks (1MB by default, which passes nginx default). The API user doesn't
+           change as all, as the component "compiles" input streams from subsequent requests back into 
+           a one InputStream.
+         * Uploads are always "truly streamed", you can handle files while they are being uploaded. In 
+           chunked mode there is additional 1kb buffering JDK creates and a separate thread (can be 
+           configured to use Virtual Threads), see 
+           [Vaadin Executor](https://vaadin.com/docs/latest/flow/advanced/service-executor) in docs.
          * Supports folder uplooads both via dialog and drag-and-drop
         
         Below a configuration that counts lines from folders that are picked with the dialog (or
