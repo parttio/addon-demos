@@ -1,5 +1,8 @@
 package org.example.otherexamples;
 
+import com.vaadin.collaborationengine.CollaborationAvatarGroup;
+import com.vaadin.collaborationengine.UserInfo;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.AttachmentType;
@@ -8,17 +11,22 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.markdown.Markdown;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.streams.DownloadEvent;
 import com.vaadin.flow.server.streams.DownloadHandler;
 import com.vaadin.flow.server.streams.DownloadResponse;
+import com.vaadin.flow.server.streams.InMemoryUploadHandler;
+import com.vaadin.flow.server.streams.UploadHandler;
 import org.example.ExamplesLayout;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Blob;
@@ -94,6 +102,56 @@ public class NewDownloadAPI extends VerticalLayout {
             Files.copy(Path.of("/etc/hosts"), downdload.getOutputStream());
         }, AttachmentType.INLINE, "/etc/hosts inline without helper");
         downloadWithoutHelper.setDownload(false);
+
+
+        InMemoryUploadHandler inMemoryHandler = UploadHandler.inMemory(
+                (metadata, data) -> {
+                    // Get other information about the file.
+                    String fileName = metadata.fileName();
+                    String mimeType = metadata.contentType();
+                    long contentLength = metadata.contentLength();
+
+                    // Do something with the file data...
+                    // processFile(data, fileName);
+                });
+
+
+        Upload upload = new Upload(uploadEvent -> {
+            // these three lines to make this similar to InMemoryUploadHandler
+            String fileName = uploadEvent.getFileName();
+            String contentType = uploadEvent.getContentType();
+            long fileSize = uploadEvent.getFileSize();
+
+            // Now this is all I see InMemoryUploadHandler doing for me
+            byte[] data =  uploadEvent.getInputStream().readAllBytes();
+
+            // Do something with the file data...
+            // processFile(data, fileName);
+
+        });
+
+
+
+    }
+
+    @FunctionalInterface
+    public interface ImageHandler {
+        /**
+         * Gets a download handler for the avatar image for the given user.
+         *
+         * @param user
+         *            the user for which to get a download handler with the
+         *            image, not <code>null</code>
+         * @return the download handler to use for the image, or
+         *         <code>null</code> to not show use any avatar image for the
+         *         given user
+         */
+        DownloadHandler getDownloadHandler(UserInfo user);
+    }
+
+    public static interface MyGroup {
+
+        void setImageProvider(ImageHandler handler);
 
     }
 
