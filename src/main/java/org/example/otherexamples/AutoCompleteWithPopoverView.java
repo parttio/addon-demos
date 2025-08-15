@@ -73,6 +73,9 @@ public class AutoCompleteWithPopoverView extends VerticalLayout {
         }
 
         private void filter(String input) {
+            // NOTE: consider limiting suggestions or using Grid instead of
+            // a list of Paragraphs if there are many suggestions, this might
+            // "choke" the browser with huge amount of results.
             List<String> filteredSuggestions = suggestions.stream()
                     .filter(suggestion -> suggestion.toLowerCase().startsWith(input.toLowerCase()))
                     .toList();
