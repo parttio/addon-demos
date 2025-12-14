@@ -39,6 +39,9 @@ public class AutoCompleteWithPopoverView extends VerticalLayout {
 
         public AutoCompleteTextField() {
             super();
+            // This makes a good balance between performance and user experience
+            // as it only updates suggestions (and makes a server side visit)
+            // when the user stops typing for a moment.
             setValueChangeMode(ValueChangeMode.LAZY);
 
             // Do NOT DO This here yet, opens without asking....
