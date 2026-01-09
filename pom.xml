@@ -68,6 +68,11 @@
 
         <!-- Add-ons -->
         <dependency>
+            <groupId>in.virit</groupId>
+            <artifactId>svg-visualizations</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.parttio</groupId>
             <artifactId>leader-line</artifactId>
             <version>3.0.0</version>
