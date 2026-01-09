@@ -4,34 +4,31 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import org.example.Addon;
 import org.example.DefaultLayout;
-import org.jsoup.safety.Safelist;
 import org.vaadin.firitin.appframework.MenuItem;
 import org.vaadin.firitin.components.RichText;
 import org.vaadin.firitin.components.orderedlayout.VHorizontalLayout;
-import org.vaadin.tinymce.TinyMce;
+import org.vaadin.hugerte.HugeRte;
 
 @Route(layout = DefaultLayout.class)
-@MenuItem(title = "TinyMce", icon = VaadinIcon.EDIT)
-@Addon("tinymce-for-flow")
+@MenuItem(title = "HugeRte", icon = VaadinIcon.EDIT)
+@Addon("hugerte-for-flow")
 public class TinyMceView extends VerticalLayout {
 
     public TinyMceView() {
         add(new RichText().withMarkDown("""
-        # TinyMCE editor
+        # HugeRTE editor
         
-        TinyMCE is a platform independent web based Javascript HTML WYSIWYG editor control released as Open Source under GPL (since version 7).
-        The Vaadin add-on used here, uses the [TinyMCE 6](https://www.tiny.cloud/docs/tinymce/6/) version, which use more enterprise friendly MIT license. Join the discussion in [GitHub](https://github.com/parttio/tinymce-for-flow/issues/37) whether to upgrade to TinyMCE 7 or to continue with the forked HugeRTE project in the future.
+        HugeRTE is a platform independent web based Javascript HTML WYSIWYG editor. It is a fork of more commonly known
+        TinyMCE editor, which now has less liberal license.
         
-        See more configuration options from [add-on tests](https://github.com/parttio/tinymce-for-flow/tree/master/src/test/java/org/vaadin/tinymce) or [TinyMCE documentation](https://www.tiny.cloud/docs/configure/).
+        See more configuration options from [add-on tests](https://github.com/parttio/hugerte-for-flow/tree/master/src/test/java/org/vaadin/hugerte).
         """));
 
-        TinyMce editor = new TinyMce();
+        HugeRte editor = new HugeRte();
         String originalValue = "This is a <b>bold</b> text with <i>italic</i> text.";
         editor.setValue(originalValue);
         editor.setWidth("100%");

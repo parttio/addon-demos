@@ -1,11 +1,7 @@
 package org.example.views;
 
-import com.fasterxml.jackson.databind.JavaType;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.customfield.CustomField;
-import com.vaadin.flow.component.dependency.JsModule;
-import com.vaadin.flow.component.dependency.NpmPackage;
-import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.dom.Style;
@@ -16,16 +12,16 @@ import in.virit.color.NamedColor;
 import in.virit.color.RgbColor;
 import org.example.Addon;
 import org.example.DefaultLayout;
-import org.parttio.Dash;
-import org.parttio.DropShadow;
-import org.parttio.Gradient;
-import org.parttio.LeaderLine;
-import org.parttio.LeaderLineFactory;
-import org.parttio.LeaderLineOptions;
-import org.parttio.PathType;
-import org.parttio.PlugType;
-import org.parttio.SocketGravity;
-import org.parttio.SocketType;
+import org.vaadin.addon.leaderline.Dash;
+import org.vaadin.addon.leaderline.DropShadow;
+import org.vaadin.addon.leaderline.Gradient;
+import org.vaadin.addon.leaderline.LeaderLine;
+import org.vaadin.addon.leaderline.LeaderLineFactory;
+import org.vaadin.addon.leaderline.LeaderLineOptions;
+import org.vaadin.addon.leaderline.PathType;
+import org.vaadin.addon.leaderline.PlugType;
+import org.vaadin.addon.leaderline.SocketGravity;
+import org.vaadin.addon.leaderline.SocketType;
 import org.vaadin.addons.parttio.colorful.RgbaColorPicker;
 import org.vaadin.firitin.appframework.MenuItem;
 import org.vaadin.firitin.components.RichText;
@@ -38,9 +34,6 @@ import java.util.Arrays;
 @Route(layout = DefaultLayout.class)
 @MenuItem(title = "LeaderLine", icon = VaadinIcon.LINE_H)
 @Addon("LeaderLine")
-// TODO for some reason it seams like this is needed,for dev-mode, figure out why.
-// Production bundle builds fine even without this (and line appears).
-@Uses(LeaderLineFactory.class)
 public class LeaderLineView extends VerticalLayout {
 
     private final AbsoluteButton button2;
@@ -76,9 +69,10 @@ public class LeaderLineView extends VerticalLayout {
                 setEndPlugColor(NamedColor.GREEN);
                 setStartSocket(SocketType.BOTTOM);
                 setDropShadow(new DropShadow("blue", 2.0, 2.0, 2.5));
-                setStartLabel("Start label");
-                setMiddleLabel("Middle label");
-                setEndLabel("End label");
+                // These disabled as somehow broken for Safari 🤷‍♂️
+                // setStartLabel("Start label");
+                // setMiddleLabel("Middle label");
+                // setEndLabel("End label");
                 setGradient(new Gradient(HexColor.of("#ff0000"), HexColor.of("#00ff00"), 0.0));
                 setSize(10.0);
                 setOutline(true);

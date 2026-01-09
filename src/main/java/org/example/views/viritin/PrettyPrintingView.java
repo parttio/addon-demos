@@ -1,8 +1,5 @@
 package org.example.views.viritin;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
@@ -21,6 +18,7 @@ import org.vaadin.firitin.components.RichText;
 import org.vaadin.firitin.components.orderedlayout.VVerticalLayout;
 import org.vaadin.firitin.layouts.HorizontalFloatLayout;
 import org.vaadin.firitin.rad.PrettyPrinter;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -110,13 +108,9 @@ public class PrettyPrintingView extends VVerticalLayout {
     }
 
     public static String toPrettyJson(Object dto) {
-        try {
-            ObjectMapper mrJackson = new ObjectMapper();
-            mrJackson.registerModule(new JavaTimeModule());
-            return mrJackson.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        ObjectMapper mrJackson = new ObjectMapper();
+        //mrJackson.registerModule(new JavaTimeModule());
+        return mrJackson.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
     }
 
 }

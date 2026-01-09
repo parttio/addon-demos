@@ -1,0 +1,981 @@
+package org.example.views.viritin;
+
+import com.vaadin.flow.component.html.Emphasis;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.shared.Registration;
+import in.virit.color.NamedColor;
+import org.example.Addon;
+import org.example.DefaultLayout;
+import org.vaadin.firitin.appframework.MenuItem;
+import org.vaadin.firitin.components.VSvg;
+import org.vaadin.firitin.components.orderedlayout.VHorizontalLayout;
+import org.vaadin.firitin.components.orderedlayout.VVerticalLayout;
+import org.vaadin.firitin.element.svg.AnimateTransformElement;
+import org.vaadin.firitin.element.svg.CircleElement;
+import org.vaadin.firitin.element.svg.ClipPathElement;
+import org.vaadin.firitin.element.svg.DefsElement;
+import org.vaadin.firitin.element.svg.EllipseElement;
+import org.vaadin.firitin.element.svg.GElement;
+import org.vaadin.firitin.element.svg.ImageElement;
+import org.vaadin.firitin.element.svg.LineElement;
+import org.vaadin.firitin.element.svg.LinearGradientElement;
+import org.vaadin.firitin.element.svg.MaskElement;
+import org.vaadin.firitin.element.svg.PathElement;
+import org.vaadin.firitin.element.svg.PatternElement;
+import org.vaadin.firitin.element.svg.PolygonElement;
+import org.vaadin.firitin.element.svg.PolylineElement;
+import org.vaadin.firitin.element.svg.RadialGradientElement;
+import org.vaadin.firitin.element.svg.RectElement;
+import org.vaadin.firitin.element.svg.SvgGraphicsElement;
+import org.vaadin.firitin.element.svg.SymbolElement;
+import org.vaadin.firitin.element.svg.TSpanElement;
+import org.vaadin.firitin.element.svg.TextElement;
+import org.vaadin.firitin.element.svg.TextPathElement;
+import org.vaadin.firitin.element.svg.UseElement;
+
+@Route(layout = DefaultLayout.class)
+@MenuItem(icon = VaadinIcon.PICTURE, parent = ViritinMenuGroup.class)
+@Addon("flow-viritin")
+public class Svg extends VVerticalLayout {
+    public Svg() {
+        add("Viritin comes with a set of extensions to raw Element API provided by Vaadin, that allows you to create DOM" +
+                " for SVG graphics. This can be handy when building custom components that need to draw some graphics " +
+                "and possibly attach DOM listeners to graphics elements." +
+                "Below some examples showcasing the API. Same is possible since Vaadin 25 with raw Element API as well," +
+                "but the code is completely untyped in that case and caseSensitive attributes don't work.");
+        add(new Emphasis("TIP: click on red heart path for a surprise (event listener and smil animation demo)"));
+
+        // Create EllipseDemo first so HeartPathDemo can reference it for click-triggered animation
+        var ellipseDemo = new EllipseDemo();
+
+        add(new H3("Basic Shapes"));
+        add(new VHorizontalLayout(
+                new RectDemo(),
+                new CircleDemo(),
+                ellipseDemo,
+                new LineDemo(),
+                new PolylineDemo()
+        ));
+
+        add(new H3("Path and Polygon Shapes"));
+        var heartPathDemo = new HeartPathDemo();
+        heartPathDemo.onHearPathClick(() -> ellipseDemo.triggerAnimation());
+        add(new VHorizontalLayout(
+                heartPathDemo,
+                new PolygonDemo(),
+                new StarDemo()
+        ));
+
+        add(new H3("Stroke Styles Demo"));
+        add(new VHorizontalLayout(
+                new StrokeStylesDemo(),
+                new OpacityDemo()
+        ));
+
+        add(new H3("Transforms Demo"));
+        add(new VHorizontalLayout(
+                new TransformDemo(),
+                new RotateDemo()
+        ));
+
+        add(new H3("Structural Elements (Group, Defs, Use)"));
+        add(new VHorizontalLayout(
+                new GroupDemo(),
+                new SymbolUseDemo()
+        ));
+
+        add(new H3("Gradients and Text"));
+        add(new VHorizontalLayout(
+                new GradientDemo(),
+                new TextDemo()
+        ));
+
+        add(new H3("Image and Clipping"));
+        add(new VHorizontalLayout(
+                new ImageClipDemo()
+        ));
+
+        add(new H3("Patterns and Masks"));
+        add(new VHorizontalLayout(
+                new PatternDemo(),
+                new MaskDemo()
+        ));
+
+        add(new H3("Advanced Text (TSpan, TextPath)"));
+        add(new VHorizontalLayout(
+                new TSpanDemo(),
+                new TextPathDemo()
+        ));
+
+        add(new H3("Combined Example: Simple Diagram"));
+        add(new FlowDiagram());
+    }
+
+    static class RectDemo extends VSvg {
+        RectDemo() {
+            super(0, 0, 100, 100);
+            setWidth("150px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            var rect = new RectElement()
+                    .bounds(10, 10, 80, 80)
+                    .cornerRadius(8)
+                    .fill(NamedColor.STEELBLUE);
+
+            var label = new RectElement()
+                    .x(10).y(85)
+                    .width(80).height(12)
+                    .fill(NamedColor.WHITE);
+
+            getElement().appendChild(rect, label);
+        }
+    }
+
+    static class CircleDemo extends VSvg {
+        CircleDemo() {
+            super(0, 0, 100, 100);
+            setWidth("150px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            var circle = new CircleElement()
+                    .center(50, 50)
+                    .r(40)
+                    .fill(NamedColor.CORAL);
+
+            var innerCircle = new CircleElement()
+                    .center(50, 50)
+                    .r(20)
+                    .fill(NamedColor.WHITE);
+
+            getElement().appendChild(circle, innerCircle);
+        }
+    }
+
+    static class EllipseDemo extends VSvg {
+        private final AnimateTransformElement rotateAnimation;
+
+        EllipseDemo() {
+            super(0, 0, 100, 100);
+            setWidth("150px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            var ellipse = new EllipseElement()
+                    .center(50, 50)
+                    .radii(45, 25)
+                    .fill(NamedColor.MEDIUMSEAGREEN);
+
+            var verticalEllipse = new EllipseElement()
+                    .center(50, 50)
+                    .radii(15, 35)
+                    .fill(NamedColor.PALEGREEN);
+
+            // Add rotation animation to vertical ellipse (triggered externally)
+            rotateAnimation = new AnimateTransformElement()
+                    .type(AnimateTransformElement.Type.ROTATE)
+                    .rotateFromTo(0, 360, 50, 50)
+                    .dur("1s")
+                    .begin("indefinite")
+            ;
+
+            verticalEllipse.appendChild(rotateAnimation);
+
+            getElement().appendChild(ellipse, verticalEllipse);
+        }
+
+        /**
+         * Triggers the rotation animation
+         */
+        public void triggerAnimation() {
+            rotateAnimation.beginElement();
+        }
+    }
+
+    static class LineDemo extends VSvg {
+        LineDemo() {
+            super(0, 0, 100, 100);
+            setWidth("150px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            var line1 = new LineElement()
+                    .from(10, 10).to(90, 90)
+                    .stroke(NamedColor.DARKVIOLET)
+                    .strokeWidth(3);
+
+            var line2 = new LineElement()
+                    .from(90, 10).to(10, 90)
+                    .stroke(NamedColor.ORANGE)
+                    .strokeWidth(3);
+
+            var line3 = new LineElement()
+                    .from(50, 5).to(50, 95)
+                    .stroke(NamedColor.TEAL)
+                    .strokeWidth(2);
+
+            var line4 = new LineElement()
+                    .from(5, 50).to(95, 50)
+                    .stroke(NamedColor.TEAL)
+                    .strokeWidth(2);
+
+            getElement().appendChild(line1, line2, line3, line4);
+        }
+    }
+
+    static class PolylineDemo extends VSvg {
+        PolylineDemo() {
+            super(0, 0, 100, 100);
+            setWidth("150px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            // Stair-step pattern (open shape - not closed like polygon)
+            var stairs = new PolylineElement()
+                    .points(10, 80, 10, 60, 30, 60, 30, 40, 50, 40, 50, 20, 70, 20, 70, 10, 90, 10)
+                    .stroke(NamedColor.STEELBLUE)
+                    .strokeWidth(3)
+                    .noFill();
+
+            // Zigzag pattern
+            var zigzag = new PolylineElement()
+                    .addPoint(10, 95)
+                    .addPoint(25, 85)
+                    .addPoint(40, 95)
+                    .addPoint(55, 85)
+                    .addPoint(70, 95)
+                    .addPoint(85, 85)
+                    .stroke(NamedColor.CORAL)
+                    .strokeWidth(2)
+                    .noFill();
+
+            getElement().appendChild(stairs, zigzag);
+        }
+    }
+
+    static class HeartPathDemo extends VSvg {
+        private SvgGraphicsElement heart;
+
+        HeartPathDemo() {
+            super(0, 0, 100, 100);
+            setWidth("150px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            double x = 50;
+            double y = 30;
+            double y2 = 85;
+            double dy = y - 30;
+            double dx = 90;
+
+            heart = new PathElement(p ->
+                    p.moveTo(x, y)
+                            .cubicBezierTo(x, dy, x - dx, dy, x, y2)
+                            .cubicBezierTo(x + dx, dy, x, dy, x, y)
+                            .closePath()
+            ).fill(NamedColor.CRIMSON);
+
+            getElement().appendChild(heart);
+        }
+
+        public Registration onHearPathClick(Runnable listener) {
+            return heart.addEventListener("click", e -> listener.run());
+        }
+    }
+
+    static class PolygonDemo extends VSvg {
+        PolygonDemo() {
+            super(0, 0, 100, 100);
+            setWidth("150px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            var triangle = new PolygonElement()
+                    .triangle(50, 10, 10, 60, 90, 60)
+                    .fill(NamedColor.DODGERBLUE)
+                    .stroke(NamedColor.DARKBLUE)
+                    .strokeWidth(2);
+
+            var hexagon = new PolygonElement()
+                    .regularPolygon(50, 75, 20, 6)
+                    .fill(NamedColor.GOLD)
+                    .stroke(NamedColor.DARKORANGE)
+                    .strokeWidth(2);
+
+            getElement().appendChild(triangle, hexagon);
+        }
+    }
+
+    static class StarDemo extends VSvg {
+        StarDemo() {
+            super(0, 0, 100, 100);
+            setWidth("150px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            var star = new PolygonElement()
+                    .star(50, 50, 45, 20, 5)
+                    .fill(NamedColor.GOLD)
+                    .stroke(NamedColor.DARKORANGE)
+                    .strokeWidth(2);
+
+            getElement().appendChild(star);
+        }
+    }
+
+    static class StrokeStylesDemo extends VSvg {
+        StrokeStylesDemo() {
+            super(0, 0, 150, 100);
+            setWidth("225px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            // Solid line
+            var solid = new LineElement()
+                    .from(10, 15).to(140, 15)
+                    .stroke(NamedColor.DARKBLUE)
+                    .strokeWidth(3);
+
+            // Dashed line
+            var dashed = new LineElement()
+                    .from(10, 35).to(140, 35)
+                    .stroke(NamedColor.DARKGREEN)
+                    .strokeWidth(3)
+                    .strokeDasharray(10, 5);
+
+            // Dotted line
+            var dotted = new LineElement()
+                    .from(10, 55).to(140, 55)
+                    .stroke(NamedColor.DARKRED)
+                    .strokeWidth(3)
+                    .strokeDasharray(3, 3);
+
+            // Line with round cap
+            var roundCap = new LineElement()
+                    .from(10, 75).to(70, 75)
+                    .stroke(NamedColor.PURPLE)
+                    .strokeWidth(8)
+                    .strokeLinecap(SvgGraphicsElement.LineCap.ROUND);
+
+            // Line with square cap
+            var squareCap = new LineElement()
+                    .from(80, 75).to(140, 75)
+                    .stroke(NamedColor.ORANGE)
+                    .strokeWidth(8)
+                    .strokeLinecap(SvgGraphicsElement.LineCap.SQUARE);
+
+            // Path with different line joins
+            var miterJoin = new PathElement()
+                    .moveTo(10, 95).lineTo(30, 85).lineTo(50, 95)
+                    .stroke(NamedColor.TEAL)
+                    .strokeWidth(4)
+                    .noFill()
+                    .strokeLinejoin(SvgGraphicsElement.LineJoin.MITER);
+
+            var roundJoin = new PathElement()
+                    .moveTo(60, 95).lineTo(80, 85).lineTo(100, 95)
+                    .stroke(NamedColor.TEAL)
+                    .strokeWidth(4)
+                    .noFill()
+                    .strokeLinejoin(SvgGraphicsElement.LineJoin.ROUND);
+
+            var bevelJoin = new PathElement()
+                    .moveTo(110, 95).lineTo(130, 85).lineTo(150, 95)
+                    .stroke(NamedColor.TEAL)
+                    .strokeWidth(4)
+                    .noFill()
+                    .strokeLinejoin(SvgGraphicsElement.LineJoin.BEVEL);
+
+            getElement().appendChild(solid, dashed, dotted, roundCap, squareCap,
+                    miterJoin, roundJoin, bevelJoin);
+        }
+    }
+
+    static class OpacityDemo extends VSvg {
+        OpacityDemo() {
+            super(0, 0, 100, 100);
+            setWidth("150px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            // Overlapping circles with different opacities
+            var circle1 = new CircleElement()
+                    .center(35, 40)
+                    .r(30)
+                    .fill(NamedColor.RED)
+                    .fillOpacity(0.6);
+
+            var circle2 = new CircleElement()
+                    .center(65, 40)
+                    .r(30)
+                    .fill(NamedColor.BLUE)
+                    .fillOpacity(0.6);
+
+            var circle3 = new CircleElement()
+                    .center(50, 65)
+                    .r(30)
+                    .fill(NamedColor.GREEN)
+                    .fillOpacity(0.6);
+
+            // Rect with stroke opacity
+            var rect = new RectElement()
+                    .bounds(20, 80, 60, 15)
+                    .fill(NamedColor.GOLD)
+                    .stroke(NamedColor.BLACK)
+                    .strokeWidth(3)
+                    .strokeOpacity(0.3);
+
+            getElement().appendChild(circle1, circle2, circle3, rect);
+        }
+    }
+
+    static class TransformDemo extends VSvg {
+        TransformDemo() {
+            super(0, 0, 150, 100);
+            setWidth("225px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            // Original rect (reference)
+            var original = new RectElement()
+                    .bounds(10, 10, 30, 20)
+                    .fill(NamedColor.LIGHTGRAY)
+                    .stroke(NamedColor.GRAY)
+                    .strokeWidth(1);
+
+            // Translated rect
+            var translated = new RectElement()
+                    .bounds(10, 10, 30, 20)
+                    .fill(NamedColor.STEELBLUE)
+                    .translate(50, 0);
+
+            // Scaled rect
+            var scaled = new RectElement()
+                    .bounds(10, 10, 30, 20)
+                    .fill(NamedColor.CORAL)
+                    .translate(0, 40)
+                    .scale(1.5);
+
+            // Skewed rect
+            var skewed = new RectElement()
+                    .bounds(10, 10, 30, 20)
+                    .fill(NamedColor.MEDIUMSEAGREEN)
+                    .translate(80, 40)
+                    .skewX(20);
+
+            getElement().appendChild(original, translated, scaled, skewed);
+        }
+    }
+
+    static class RotateDemo extends VSvg {
+        RotateDemo() {
+            super(0, 0, 100, 100);
+            setWidth("150px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            // Center point marker
+            var center = new CircleElement()
+                    .center(50, 50)
+                    .r(3)
+                    .fill(NamedColor.RED);
+
+            // Multiple rotated rectangles around center
+            for (int i = 0; i < 8; i++) {
+                var rect = new RectElement()
+                        .bounds(45, 20, 10, 25)
+                        .fill(NamedColor.STEELBLUE)
+                        .fillOpacity(0.7)
+                        .stroke(NamedColor.DARKBLUE)
+                        .strokeWidth(1)
+                        .rotate(i * 45, 50, 50);
+                getElement().appendChild(rect);
+            }
+
+            getElement().appendChild(center);
+        }
+    }
+
+    static class FlowDiagram extends VSvg {
+        FlowDiagram() {
+            super(0, 0, 300, 150);
+            setWidth("450px");
+            setHeight("225px");
+            getStyle().setBorder("1px solid #ccc");
+
+            var box1 = new RectElement()
+                    .bounds(20, 50, 60, 40)
+                    .cornerRadius(5)
+                    .fill(NamedColor.LIGHTBLUE);
+
+            var box2 = new RectElement()
+                    .bounds(120, 50, 60, 40)
+                    .cornerRadius(5)
+                    .fill(NamedColor.LIGHTGREEN);
+
+            var box3 = new RectElement()
+                    .bounds(220, 50, 60, 40)
+                    .cornerRadius(5)
+                    .fill(NamedColor.LIGHTSALMON);
+
+            var line1 = new LineElement()
+                    .from(80, 70).to(120, 70)
+                    .stroke(NamedColor.GRAY)
+                    .strokeWidth(2);
+
+            var line2 = new LineElement()
+                    .from(180, 70).to(220, 70)
+                    .stroke(NamedColor.GRAY)
+                    .strokeWidth(2);
+
+            var arrow1a = new LineElement()
+                    .from(115, 65).to(120, 70)
+                    .stroke(NamedColor.GRAY)
+                    .strokeWidth(2);
+            var arrow1b = new LineElement()
+                    .from(115, 75).to(120, 70)
+                    .stroke(NamedColor.GRAY)
+                    .strokeWidth(2);
+
+            var arrow2a = new LineElement()
+                    .from(215, 65).to(220, 70)
+                    .stroke(NamedColor.GRAY)
+                    .strokeWidth(2);
+            var arrow2b = new LineElement()
+                    .from(215, 75).to(220, 70)
+                    .stroke(NamedColor.GRAY)
+                    .strokeWidth(2);
+
+            var status1 = new CircleElement()
+                    .center(50, 45)
+                    .r(5)
+                    .fill(NamedColor.GREEN);
+
+            var status2 = new CircleElement()
+                    .center(150, 45)
+                    .r(5)
+                    .fill(NamedColor.YELLOW);
+
+            var status3 = new CircleElement()
+                    .center(250, 45)
+                    .r(5)
+                    .fill(NamedColor.RED);
+
+            getElement().appendChild(
+                    box1, box2, box3,
+                    line1, line2,
+                    arrow1a, arrow1b, arrow2a, arrow2b,
+                    status1, status2, status3
+            );
+        }
+    }
+
+    static class GroupDemo extends VSvg {
+        GroupDemo() {
+            super(0, 0, 100, 100);
+            setWidth("150px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            // Create a group with common styling
+            var group1 = new GElement()
+                    .add(
+                            new RectElement().bounds(5, 5, 20, 20),
+                            new RectElement().bounds(10, 10, 20, 20),
+                            new RectElement().bounds(15, 15, 20, 20)
+                    );
+            group1.fill(NamedColor.STEELBLUE)
+                    .stroke(NamedColor.DARKBLUE)
+                    .strokeWidth(1);
+
+            // Create another group with transform
+            var group2 = new GElement()
+                    .add(
+                            new CircleElement().center(0, 0).r(15),
+                            new CircleElement().center(15, 0).r(10),
+                            new CircleElement().center(-15, 0).r(10)
+                    );
+            group2.fill(NamedColor.CORAL)
+                    .stroke(NamedColor.DARKRED)
+                    .strokeWidth(1)
+                    .translate(50, 50)
+                    .rotate(30);
+
+            getElement().appendChild(group1, group2);
+        }
+    }
+
+    static class SymbolUseDemo extends VSvg {
+        SymbolUseDemo() {
+            super(0, 0, 150, 100);
+            setWidth("225px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            // Define a reusable star symbol (no manual ID needed)
+            var starSymbol = new SymbolElement()
+                    .viewBox(0, 0, 100, 100)
+                    .add(new PolygonElement()
+                            .star(50, 50, 45, 20, 5)
+                            .fill(NamedColor.GOLD)
+                            .stroke(NamedColor.DARKORANGE)
+                            .strokeWidth(2));
+
+            // Define a reusable circle symbol (no manual ID needed)
+            var circleSymbol = new SymbolElement()
+                    .viewBox(0, 0, 100, 100)
+                    .add(new CircleElement()
+                            .center(50, 50)
+                            .r(40)
+                            .fill(NamedColor.LIGHTBLUE)
+                            .stroke(NamedColor.STEELBLUE)
+                            .strokeWidth(3));
+
+            // Put symbols in defs
+            var defs = new DefsElement().add(starSymbol, circleSymbol);
+
+            // Use the symbols multiple times - pass element directly
+            var star1 = new UseElement(starSymbol).position(5, 5).size(40, 40);
+            var star2 = new UseElement(starSymbol).position(50, 30).size(30, 30);
+            var star3 = new UseElement(starSymbol).position(95, 5).size(50, 50);
+
+            var circle1 = new UseElement(circleSymbol).position(5, 55).size(40, 40);
+            var circle2 = new UseElement(circleSymbol).position(55, 55).size(40, 40);
+            var circle3 = new UseElement(circleSymbol).position(105, 55).size(40, 40);
+
+            getElement().appendChild(defs, star1, star2, star3, circle1, circle2, circle3);
+        }
+    }
+
+    static class GradientDemo extends VSvg {
+        GradientDemo() {
+            super(0, 0, 150, 100);
+            setWidth("225px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            // Linear gradient (no manual ID needed)
+            var linearGrad = new LinearGradientElement()
+                    .horizontal()
+                    .addStop(0, NamedColor.STEELBLUE)
+                    .addStop(0.5, NamedColor.WHITE)
+                    .addStop(1, NamedColor.CORAL);
+
+            // Radial gradient (no manual ID needed)
+            var radialGrad = new RadialGradientElement()
+                    .addStop(0, NamedColor.YELLOW)
+                    .addStop(0.5, NamedColor.ORANGE)
+                    .addStop(1, NamedColor.RED);
+
+            // Vertical gradient (no manual ID needed)
+            var verticalGrad = new LinearGradientElement()
+                    .vertical()
+                    .addStop(0, NamedColor.LIGHTGREEN)
+                    .addStop(1, NamedColor.DARKGREEN);
+
+            var defs = new DefsElement().add(linearGrad, radialGrad, verticalGrad);
+
+            // Shapes using gradients - pass elements directly
+            var rect1 = new RectElement()
+                    .bounds(5, 5, 65, 40)
+                    .cornerRadius(5)
+                    .fill(linearGrad);
+
+            var circle = new CircleElement()
+                    .center(115, 25)
+                    .r(20)
+                    .fill(radialGrad);
+
+            var rect2 = new RectElement()
+                    .bounds(5, 55, 140, 40)
+                    .cornerRadius(5)
+                    .fill(verticalGrad);
+
+            getElement().appendChild(defs, rect1, circle, rect2);
+        }
+    }
+
+    static class TextDemo extends VSvg {
+        TextDemo() {
+            super(0, 0, 150, 100);
+            setWidth("225px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            // Gradient for text (no manual ID needed)
+            var textGrad = new LinearGradientElement()
+                    .horizontal()
+                    .addStop(0, NamedColor.PURPLE)
+                    .addStop(1, NamedColor.ORANGE);
+
+            var defs = new DefsElement().add(textGrad);
+
+            var text1 = new TextElement(10, 20, "Hello SVG!")
+                    .fontSize(16)
+                    .fontWeight(TextElement.FontWeight.BOLD)
+                    .fill(NamedColor.STEELBLUE);
+
+            var text2 = new TextElement(75, 45, "Centered")
+                    .fontSize(14)
+                    .textAnchor(TextElement.TextAnchor.MIDDLE)
+                    .fill(NamedColor.CORAL);
+
+            var text3 = new TextElement(10, 65, "Italic text")
+                    .fontSize(12)
+                    .fontStyle(TextElement.FontStyle.ITALIC)
+                    .fill(NamedColor.DARKGREEN);
+
+            var text4 = new TextElement(10, 85, "With gradient")
+                    .fontSize(18)
+                    .fontWeight(TextElement.FontWeight.BOLD)
+                    .fill(textGrad);
+
+            getElement().appendChild(defs, text1, text2, text3, text4);
+        }
+    }
+
+    static class ImageClipDemo extends VSvg {
+        ImageClipDemo() {
+            super(0, 0, 300, 150);
+            setWidth("450px");
+            setHeight("225px");
+            getStyle().setBorder("1px solid #ccc");
+
+            // Define clip paths (no manual IDs needed)
+            var circleClip = new ClipPathElement()
+                    .add(new CircleElement().center(75, 75).r(60));
+
+            var starClip = new ClipPathElement()
+                    .add(new PolygonElement().star(225, 75, 60, 25, 5));
+
+            var defs = new DefsElement().add(circleClip, starClip);
+
+            // Image with circle clip - pass the element directly
+            var clippedCircle = new ImageElement("view.jpeg")
+                    .bounds(15, 15, 120, 120)
+                    .preserveAspectRatio("xMidYMid slice");
+            clippedCircle.clipPath(circleClip);
+
+            var label2 = new TextElement(75, 145, "Circle clip")
+                    .fontSize(12)
+                    .textAnchor(TextElement.TextAnchor.MIDDLE)
+                    .fill(NamedColor.GRAY);
+
+            // Image with star clip - pass the element directly
+            var clippedStar = new ImageElement("view.jpeg")
+                    .bounds(165, 15, 120, 120)
+                    .preserveAspectRatio("xMidYMid slice");
+            clippedStar.clipPath(starClip);
+
+            var label3 = new TextElement(225, 145, "Star clip")
+                    .fontSize(12)
+                    .textAnchor(TextElement.TextAnchor.MIDDLE)
+                    .fill(NamedColor.GRAY);
+
+            getElement().appendChild(defs, clippedCircle, label2, clippedStar, label3);
+        }
+    }
+
+    static class PatternDemo extends VSvg {
+        PatternDemo() {
+            super(0, 0, 150, 100);
+            setWidth("225px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            // Create a checkerboard pattern (no manual ID needed)
+            var checkerPattern = new PatternElement()
+                    .size(20, 20)
+                    .patternUnits(PatternElement.PatternUnits.USER_SPACE_ON_USE)
+                    .add(
+                            new RectElement().bounds(0, 0, 10, 10).fill(NamedColor.GRAY),
+                            new RectElement().bounds(10, 10, 10, 10).fill(NamedColor.GRAY)
+                    );
+
+            // Create a dots pattern (no manual ID needed)
+            var dotsPattern = new PatternElement()
+                    .size(15, 15)
+                    .patternUnits(PatternElement.PatternUnits.USER_SPACE_ON_USE)
+                    .add(new CircleElement().center(7.5, 7.5).r(3).fill(NamedColor.STEELBLUE));
+
+            var defs = new DefsElement().add(checkerPattern, dotsPattern);
+
+            // Rectangle with checkerboard pattern - pass element directly
+            var rect1 = new RectElement()
+                    .bounds(5, 5, 65, 60)
+                    .fill(checkerPattern)
+                    .stroke(NamedColor.DARKGRAY)
+                    .strokeWidth(1);
+
+            // Circle with dots pattern - pass element directly
+            var circle = new CircleElement()
+                    .center(110, 35)
+                    .r(30)
+                    .fill(dotsPattern)
+                    .stroke(NamedColor.DARKBLUE)
+                    .strokeWidth(1);
+
+            var label1 = new TextElement(37, 85, "Checkerboard")
+                    .fontSize(10)
+                    .textAnchor(TextElement.TextAnchor.MIDDLE)
+                    .fill(NamedColor.GRAY);
+
+            var label2 = new TextElement(110, 85, "Dots")
+                    .fontSize(10)
+                    .textAnchor(TextElement.TextAnchor.MIDDLE)
+                    .fill(NamedColor.GRAY);
+
+            getElement().appendChild(defs, rect1, circle, label1, label2);
+        }
+    }
+
+    static class MaskDemo extends VSvg {
+        MaskDemo() {
+            super(0, 0, 150, 100);
+            setWidth("225px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            // Create a gradient for the mask (white = visible, black = hidden)
+            var gradientForMask = new LinearGradientElement()
+                    .horizontal()
+                    .addStop(0, "white")
+                    .addStop(1, "black");
+
+            // Gradient mask - use typed fill
+            var gradientMask = new MaskElement()
+                    .add(new RectElement()
+                            .bounds(0, 0, 150, 100)
+                            .fill(gradientForMask));
+
+            // Circle mask (no manual ID needed)
+            var circleMask = new MaskElement()
+                    .add(new CircleElement()
+                            .center(110, 50)
+                            .r(35)
+                            .fill("white"));
+
+            var defs = new DefsElement().add(gradientForMask, gradientMask, circleMask);
+
+            // Rectangle with gradient fade mask - pass element directly
+            var rect = new RectElement()
+                    .bounds(5, 10, 60, 50)
+                    .fill(NamedColor.CORAL);
+            rect.mask(gradientMask);
+
+            // Image with circle mask - pass element directly
+            var image = new ImageElement("view.jpeg")
+                    .bounds(75, 15, 70, 70)
+                    .preserveAspectRatio("xMidYMid slice");
+            image.mask(circleMask);
+
+            var label1 = new TextElement(35, 80, "Fade mask")
+                    .fontSize(10)
+                    .textAnchor(TextElement.TextAnchor.MIDDLE)
+                    .fill(NamedColor.GRAY);
+
+            var label2 = new TextElement(110, 95, "Circle mask")
+                    .fontSize(10)
+                    .textAnchor(TextElement.TextAnchor.MIDDLE)
+                    .fill(NamedColor.GRAY);
+
+            getElement().appendChild(defs, rect, image, label1, label2);
+        }
+    }
+
+    static class TSpanDemo extends VSvg {
+        TSpanDemo() {
+            super(0, 0, 150, 100);
+            setWidth("225px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            // Text with styled spans
+            var span1 = new TSpanElement("Hello ");
+            span1.fill(NamedColor.STEELBLUE);
+            var span2 = new TSpanElement("World!");
+            span2.fill(NamedColor.CORAL);
+            span2.fontWeight(TextElement.FontWeight.BOLD);
+
+            var text1 = new TextElement()
+                    .position(10, 25)
+                    .fontSize(14)
+                    .add(span1, span2);
+
+            // Text with positioned spans (multiline)
+            var text2 = new TextElement()
+                    .position(10, 50)
+                    .fontSize(12)
+                    .add(
+                            new TSpanElement("Line 1"),
+                            new TSpanElement("Line 2").x(10).dy(15),
+                            new TSpanElement("Line 3").x(10).dy(15)
+                    );
+
+            // Text with subscript/superscript
+            var text3 = new TextElement()
+                    .position(10, 95)
+                    .fontSize(14)
+                    .add(
+                            new TSpanElement("H"),
+                            new TSpanElement("2")
+                                    .baselineShift(TSpanElement.BaselineShift.SUB)
+                                    .fontSize(10),
+                            new TSpanElement("O + E=mc"),
+                            new TSpanElement("2")
+                                    .baselineShift(TSpanElement.BaselineShift.SUPER)
+                                    .fontSize(10)
+                    );
+
+            getElement().appendChild(text1, text2, text3);
+        }
+    }
+
+    static class TextPathDemo extends VSvg {
+        TextPathDemo() {
+            super(0, 0, 150, 100);
+            setWidth("225px");
+            setHeight("150px");
+            getStyle().setBorder("1px solid #ccc");
+
+            // Create a curved path for text to follow (no manual ID needed)
+            PathElement curvePath = new PathElement()
+                    .moveTo(10, 70)
+                    .quadraticBezierTo(75, 10, 140, 70);
+            curvePath.noFill().stroke(NamedColor.LIGHTGRAY).strokeWidth(1);
+
+            // Create a circle path (no manual ID needed)
+            PathElement circlePath = new PathElement()
+                    .d("M 75,90 A 25,25 0 1,1 74.99,90");
+            circlePath.noFill().stroke(NamedColor.LIGHTGRAY).strokeWidth(1);
+
+            var defs = new DefsElement().add(curvePath, circlePath);
+
+            // Text along the curve - pass PathElement directly
+            var curvedText = new TextElement()
+                    .fontSize(12)
+                    .add(new TextPathElement(curvePath, "Text along a curved path!"));
+            curvedText.fill(NamedColor.STEELBLUE);
+
+            // Text along circle - pass PathElement directly
+            var circleText = new TextElement()
+                    .fontSize(10)
+                    .add(new TextPathElement(circlePath, "Circular text • "));
+            circleText.fill(NamedColor.CORAL);
+
+            // Show the paths for reference
+            var visibleCurve = new PathElement()
+                    .moveTo(10, 70)
+                    .quadraticBezierTo(75, 10, 140, 70)
+                    .noFill()
+                    .stroke(NamedColor.LIGHTGRAY)
+                    .strokeWidth(1)
+                    .strokeDasharray(3, 3);
+
+            getElement().appendChild(defs, visibleCurve, curvedText, circleText);
+        }
+    }
+}

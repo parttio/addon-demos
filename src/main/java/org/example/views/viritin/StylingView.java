@@ -1,40 +1,20 @@
 package org.example.views.viritin;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.html.Pre;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
 import in.virit.color.NamedColor;
 import in.virit.color.RgbColor;
 import org.example.Addon;
 import org.example.DefaultLayout;
-import org.example.data.domain.Address;
-import org.example.data.domain.ComplexPerson;
-import org.example.data.domain.Person;
 import org.vaadin.firitin.appframework.MenuItem;
-import org.vaadin.firitin.components.RichText;
 import org.vaadin.firitin.components.button.DefaultButton;
 import org.vaadin.firitin.components.orderedlayout.VVerticalLayout;
-import org.vaadin.firitin.layouts.HorizontalFloatLayout;
-import org.vaadin.firitin.rad.PrettyPrinter;
 import org.vaadin.firitin.util.VStyle;
 import org.vaadin.firitin.util.style.LumoProps;
-
-import javax.naming.Name;
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Locale;
 
 @Route(layout = DefaultLayout.class)
 @MenuItem(icon = VaadinIcon.PICTURE, parent = ViritinMenuGroup.class)

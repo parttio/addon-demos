@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.8</version>
+        <version>4.0.1</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
@@ -16,10 +16,10 @@
     <packaging>jar</packaging>
 
     <properties>
-        <java.version>17</java.version>
-        <maven.compiler.release>17</maven.compiler.release>
+        <java.version>21</java.version>
+        <maven.compiler.release>21</maven.compiler.release>
         <project.tests.exclude>IntegrationTest</project.tests.exclude>
-        <vaadin.version>24.9.7</vaadin.version>
+        <vaadin.version>25.0.2</vaadin.version>
     </properties>
 
     <dependencyManagement>
@@ -36,10 +36,10 @@
 
     <dependencies>
         <!-- This brings in relevant dependencies for Spring Boot and Vaadin Flow -->
+
         <dependency>
-            <groupId>in.virit</groupId>
-            <artifactId>spring-boot-starter-flow</artifactId>
-            <version>1.0.1</version>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-spring-boot-starter</artifactId>
         </dependency>
 
         <dependency>
@@ -64,33 +64,30 @@
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.9.4</version>
-            <type>jar</type>
         </dependency>
-
 
         <!-- Add-ons -->
         <dependency>
             <groupId>org.parttio</groupId>
             <artifactId>leader-line</artifactId>
-            <version>1.1.2</version>
+            <version>3.0.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.parttio</groupId>
             <artifactId>maplibre</artifactId>
-            <version>1.5.0</version>
+            <version>2.0.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.parttio</groupId>
             <artifactId>colorful</artifactId>
-            <version>1.1.1</version>
+            <version>2.0.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.parttio</groupId>
-            <artifactId>tinymce-for-flow</artifactId>
-            <version>4.2.4</version>
+            <artifactId>hugerte-for-flow</artifactId>
+            <version>2.0.1</version>
 	      </dependency>
 
         <dependency>
@@ -108,19 +105,13 @@
         <dependency>
             <groupId>in.virit</groupId>
             <artifactId>viritin</artifactId>
-            <version>2.21.4</version>
+            <version>3.1.2</version>
         </dependency>
 
         <dependency>
             <groupId>software.xdev</groupId>
             <artifactId>vaadin-date-range-picker</artifactId>
             <version>4.2.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.vaadin.componentfactory</groupId>
-            <artifactId>togglebutton</artifactId>
-            <version>3.0.0</version>
         </dependency>
 
     </dependencies>
@@ -146,11 +137,7 @@
                 <version>${vaadin.version}</version>
                 <executions>
                     <execution>
-                        <id>frontend</id>
-                        <!-- Not yet on compile, but before actual packaging -->
-                        <phase>prepare-package</phase>
                         <goals>
-                            <goal>prepare-frontend</goal>
                             <goal>build-frontend</goal>
                         </goals>
                     </execution>

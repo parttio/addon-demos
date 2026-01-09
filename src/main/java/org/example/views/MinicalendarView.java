@@ -1,14 +1,8 @@
 package org.example.views;
 
-import com.fasterxml.jackson.databind.util.LinkedNode;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.router.Route;
 import org.example.Addon;
 import org.example.CssUtil;
@@ -16,13 +10,8 @@ import org.example.DefaultLayout;
 import org.vaadin.addons.minicalendar.MiniCalendar;
 import org.vaadin.addons.minicalendar.MiniCalendarVariant;
 import org.vaadin.firitin.appframework.MenuItem;
-import org.vaadin.firitin.components.RichText;
-import org.vaadin.firitin.components.orderedlayout.VHorizontalLayout;
-import org.vaadin.tinymce.TinyMce;
 
-import javax.swing.text.Element;
 import java.time.LocalDate;
-import java.util.Base64;
 import java.util.List;
 
 @Route(layout = DefaultLayout.class)
@@ -111,4 +100,5 @@ public class MinicalendarView extends VerticalLayout {
             }
         """);
     }
+
 }
