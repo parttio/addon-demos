@@ -6,11 +6,13 @@ import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.PageVisibility;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.signals.Signal;
 import org.example.Addon;
 import org.example.DefaultLayout;
 import org.example.data.DataService;
@@ -20,7 +22,6 @@ import org.vaadin.firitin.components.RichText;
 import org.vaadin.firitin.components.button.VButton;
 import org.vaadin.firitin.components.grid.PagingGrid;
 import org.vaadin.firitin.layouts.HorizontalFloatLayout;
-import org.vaadin.firitin.util.PageVisibility;
 import org.vaadin.firitin.util.webnotification.NotificationOptions;
 import org.vaadin.firitin.util.webnotification.WebNotification;
 
@@ -34,7 +35,7 @@ public class WebNotificationsView extends VerticalLayout {
 
     private final WebNotification webNotification;
     ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-    private PageVisibility.Visibility visibility;
+    private PageVisibility visibility;
 
     public WebNotificationsView() {
 
@@ -110,7 +111,7 @@ public class WebNotificationsView extends VerticalLayout {
             }, 2, java.util.concurrent.TimeUnit.SECONDS);
         }));
 
-        add(new VButton("Web notification if page is visible and focused, else Vaadin Notification", e -> {
+        add(new VButton("Vaadin notification if page is visible and focused, else Web Notification", e -> {
             UI ui = UI.getCurrent();
             executorService.schedule(() -> {
                 switch (visibility) {
@@ -118,15 +119,16 @@ public class WebNotificationsView extends VerticalLayout {
                     // is actively used by the user.
                     case VISIBLE -> ui.access(() -> Notification.show("\"Normal\" Vaadin Notification, page: " + visibility));
                     // Else we use the Web Notification, which is shown even if the browser tab is not focused or hidden.
-                    case VISIBLE_NON_FOCUSED, HIDDEN -> webNotification.showNotificationAsync("Web, page: " + visibility);
+                    case VISIBLE_NOT_FOCUSED, HIDDEN, UNKNOWN -> webNotification.showNotificationAsync("Web, page: " + visibility);
                 }
             }, 2, java.util.concurrent.TimeUnit.SECONDS);
         }));
 
         // Maintain the visibility state of the page, so we can use it in the button above.
-        PageVisibility.get().addVisibilityChangeListener(v -> {
-            visibility = v;
-        });
+        // The framework exposes it as a reactive Signal; an effect bound to this view keeps
+        // our field in sync (and seeds it with the initial value right away).
+        Signal<PageVisibility> visibilitySignal = UI.getCurrent().getPage().pageVisibilitySignal();
+        Signal.effect(this, () -> visibility = visibilitySignal.get());
 
     }
 }
